@@ -13,23 +13,24 @@ class App extends Component {
                 name: "Faiz",
                 memo: "Faiz Hensem"
 
-            }
+            },
+            memoModels: []
         }
     }
 
-    componentDidMount(){
-        let self=this;
-        // Make a request for a user with a given ID
-        axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest/view?id=14')
-            .then(function (response) {
-                self.setState({
-                    memoModel:response.data
-                })
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
+    componentDidMount() {
+
+        // axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest').then((res) => {
+        //     this.setState({
+        //         memoModels: res.data
+        //     });
+        // });
+
+        axios.get('http://11.11.11.11/statsdigital-yii2-adv/web/rest').then((res) => {
+            this.setState({
+                memoModels: res.data
             });
+        });
     }
 
     render() {
@@ -45,34 +46,25 @@ class App extends Component {
 
                 <div className="container">
                     <Table striped bordered condensed hover>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td colSpan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
-                </Table>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Memo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.memoModels.map((obj, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>{obj.id}</td>
+                                    <td>{obj.name}</td>
+                                    <td>{obj.memo}</td>
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </Table>
                 </div>
             </div>
         );
