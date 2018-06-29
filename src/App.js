@@ -34,7 +34,8 @@ class App extends Component {
 
         axios.get('http://11.11.11.11/statsdigital-yii2-adv/web/rest').then((res) => {
             this.setState({
-                memoModels: res.data
+                memoModels: res.data,
+                verified: true
             });
         });
     };
