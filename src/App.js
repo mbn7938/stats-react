@@ -20,17 +20,17 @@ class App extends Component {
 
     componentDidMount() {
 
-        // axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest').then((res) => {
-        //     this.setState({
-        //         memoModels: res.data
-        //     });
-        // });
-
-        axios.get('http://11.11.11.11/statsdigital-yii2-adv/web/rest').then((res) => {
+        axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest').then((res) => {
             this.setState({
                 memoModels: res.data
             });
         });
+
+        // axios.get('http://11.11.11.11/statsdigital-yii2-adv/web/rest').then((res) => {
+        //     this.setState({
+        //         memoModels: res.data
+        //     });
+        // });
     }
 
     render() {
