@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
-import {Table} from "react-bootstrap";
+import {Button, ControlLabel, FormControl, FormGroup, HelpBlock, Table} from "react-bootstrap";
 
 class App extends Component {
     constructor(props) {
@@ -13,24 +13,51 @@ class App extends Component {
                 name: "Faiz",
                 memo: "Faiz Hensem"
 
-            }
+            },
+            memoModels: [],
+            verified: false,
+            value: "",
+            semak: "Login"
         }
     }
 
-    componentDidMount(){
-        let self=this;
-        // Make a request for a user with a given ID
-        axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest/view?id=14')
-            .then(function (response) {
-                self.setState({
-                    memoModel:response.data
-                })
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+    componentDidMount() {
+
     }
+
+    getData = () => {
+        // axios.get('http://192.168.33.10/statsdigital-yii2-adv/web/rest').then((res) => {
+        //     this.setState({
+        //         memoModels: res.data
+        //     });
+        // });
+
+        axios.get('http://11.11.11.11/statsdigital-yii2-adv/web/rest').then((res) => {
+            this.setState({
+                memoModels: res.data
+            });
+        });
+    };
+
+    checkUsername = () => {
+        this.setState({
+            semak: "sedang meloginkan anda..."
+        });
+        axios.post('http://11.11.11.11/statsdigital-yii2-adv/web/rest/auth', {
+            username: this.state.value
+        }).then((res) => {
+            if (res.data.status === 1) {
+                this.getData();
+            } else {
+                alert("Salah username")
+            }
+        }).finally(() => {
+            this.setState({
+                semak: "Login"
+            });
+        });
+
+    };
 
     render() {
         return (
@@ -44,39 +71,67 @@ class App extends Component {
                 </p>
 
                 <div className="container">
-                    <Table striped bordered condensed hover>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td colSpan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
-                </Table>
+                    {(() => {
+                        if (this.state.verified) {
+                            return (
+                                <Table striped bordered condensed hover>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Memo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.state.memoModels.map((obj, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{obj.id}</td>
+                                                <td>{obj.name}</td>
+                                                <td>{obj.memo}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                    </tbody>
+                                </Table>
+                            );
+                        } else {
+                            return (
+                                <div>
+                                    <h2>Forbidden Access</h2>
+                                    <hr/>
+                                    <FieldGroup
+                                        id="formControlsText"
+                                        type="text"
+                                        label="Semak Username"
+                                        placeholder="Masukkan username"
+                                        value={this.state.value}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                value: e.target.value
+                                            })
+                                        }}
+                                    />
+                                    <Button onClick={this.checkUsername}>{this.state.semak}</Button>
+                                </div>
+                            );
+                        }
+                    })()}
+
                 </div>
             </div>
         );
     }
+}
+
+function FieldGroup({ id, label, help, ...props }) {
+    return (
+        <FormGroup controlId={id}>
+            <ControlLabel>{label}</ControlLabel>
+            <FormControl {...props} />
+            {help && <HelpBlock>{help}</HelpBlock>}
+        </FormGroup>
+    );
 }
 
 export default App;
